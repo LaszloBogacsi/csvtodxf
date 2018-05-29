@@ -25,6 +25,7 @@ public class CsvToDxf {
         String is3D = "false";
         String doPrintCode = "false";
         String doPrintheight = "false";
+
         Map<String, String> config = new HashMap<>();
         config.put("inputFilePath", inputFilePath);
         config.put("outputFilePath", outputFilePath);
@@ -78,35 +79,125 @@ public class CsvToDxf {
 //            String code = input[4];
             double textEasting = Double.parseDouble(easting)  + textHeight;
             double textNorthing = Double.parseDouble(northing)  + (textHeight * 0.5);
-            return " 0\n" +
-                    "POINT\n" +
-                    " 8\n" +
-                    pointsLayerName + "\n" +
-                    " 10\n" +
-                    easting + "\n" +
-                    " 20\n" +
-                    northing + "\n" +
-                    " 30\n" +
-                    height + "\n" +
-                    // write point id
-                    " 0\n" +
-                    "TEXT\n" +
-                    " 8\n" +
-                    pointIDLayerName + "\n" +
-                    // point id position
-                    " 10\n" +
-                    textEasting + "\n" +
-                    " 20\n" +
-                    textNorthing + "\n" +
-                    " 30\n" +
-                    "0.0\n" +
-                    " 40\n" +
-                    textHeight + "\n" +
-                    " 1\n" +
-                    id;
+            // create point
+            return printPoint(easting, northing, height, pointsLayerName, 1)
+                    + printPointId(easting, northing, id, pointIDLayerName, 1);
         }).collect(Collectors.joining("\n"));
 
         return header + entities + footer;
+    }
+
+    private String printPoint(String easting, String northing, String height, String layerName, int order) {
+
+        return " 0\n" +
+                "POINT\n" +
+                " 8\n" +
+                layerName + "\n" +
+                " 10\n" +
+                easting + "\n" +
+                " 20\n" +
+                northing + "\n" +
+                " 30\n" +
+                height + "\n";
+                // create point id
+
+    }
+
+    private String printPointId(String easting, String northing, String id, String layerName, int order) {
+        // print the point id to top right position, 0.0 height
+
+        double textHeight = Double.parseDouble(this.config.get("textHeight"));
+        double textEasting = Double.parseDouble(easting) + textHeight;
+        double textNorthing = Double.parseDouble(northing)  + (textHeight * 0.5 * order);
+
+        return " 0\n" +
+                "TEXT\n" +
+                " 8\n" +
+                layerName + "\n" +
+                " 10\n" +
+                textEasting + "\n" +
+                " 20\n" +
+                textNorthing + "\n" +
+                " 30\n" +
+                "0.0\n" +
+                " 40\n" +
+                textHeight + "\n" +
+                " 1\n" +
+                id;
+    }
+
+    private String printHeight(String easting, String northing, String height, String layerName, int order) {
+        // print the height information
+        // order 2 -- when coords, order = 1 if no coords.
+
+        // text position
+        double textHeight = Double.parseDouble(this.config.get("textHeight"));
+        double textEasting = Double.parseDouble(easting) + textHeight;
+        double textNorthing = Double.parseDouble(northing)  - (textHeight * 0.5 * order);
+        return  " 0\n" +
+                "TEXT\n" +
+                " 8\n" +
+                layerName + "\n" +
+                " 10\n" +
+                textEasting + "\n" +
+                " 20\n" +
+                textNorthing + "\n" +
+                " 30\n" +
+                "0.0\n" +
+                " 40\n" +
+                textHeight + "\n" +
+                " 1\n" +
+                height;
+
+    }
+
+    private String printCoords(String easting, String northing, String layerName, int order) {
+        // print the coordinates in one line
+        // order = 1
+
+        // text position
+        double textHeight = Double.parseDouble(this.config.get("textHeight"));
+        double textEasting = Double.parseDouble(easting) + textHeight;
+        double textNorthing = Double.parseDouble(northing)  - (textHeight * 0.5 * order);
+        return  " 0\n" +
+                "TEXT\n" +
+                " 8\n" +
+                layerName + "\n" +
+                // point id position
+                " 10\n" +
+                textEasting + "\n" +
+                " 20\n" +
+                textNorthing + "\n" +
+                " 30\n" +
+                "0.0\n" +
+                " 40\n" +
+                textHeight + "\n" +
+                " 1\n" +
+                "E=" + easting + "N=" + northing;
+    }
+
+    private String printCode(String easting, String northing, String code, String layerName, int order) {
+        // print the code in one line
+        // order = always the last
+
+        // text position
+        double textHeight = Double.parseDouble(this.config.get("textHeight"));
+        double textEasting = Double.parseDouble(easting) + textHeight;
+        double textNorthing = Double.parseDouble(northing)  - (textHeight * 0.5 * order);
+        return  " 0\n" +
+                "TEXT\n" +
+                " 8\n" +
+                layerName + "\n" +
+                " 10\n" +
+                textEasting + "\n" +
+                " 20\n" +
+                textNorthing + "\n" +
+                " 30\n" +
+                "0.0\n" +
+                " 40\n" +
+                textHeight + "\n" +
+                " 1\n" +
+                code;
     }
 
     public boolean saveToFile(String dxf) throws IOException {
