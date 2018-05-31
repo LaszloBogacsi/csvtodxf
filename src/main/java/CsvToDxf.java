@@ -76,12 +76,15 @@ public class CsvToDxf {
             String easting = input[1];
             String northing = input[2];
             String height = input[3];
-//            String code = input[4];
+            String code = input[4];
             double textEasting = Double.parseDouble(easting)  + textHeight;
             double textNorthing = Double.parseDouble(northing)  + (textHeight * 0.5);
             // create point
-            return printPoint(easting, northing, height, pointsLayerName, 1)
-                    + printPointId(easting, northing, id, pointIDLayerName, 1);
+            return printPoint(easting, northing, height, pointsLayerName, 1) + "\n"
+                    + printPointId(easting, northing, id, pointIDLayerName, 1) + "\n"
+                    + printCode(easting, northing, code, "code", 3) + "\n"
+                    + printCoords(easting, northing, "Coords", 2) + "\n"
+                    + printHeight(easting, northing, height, "Height", 1);
         }).collect(Collectors.joining("\n"));
 
         return header + entities + footer;
@@ -98,7 +101,7 @@ public class CsvToDxf {
                 " 20\n" +
                 northing + "\n" +
                 " 30\n" +
-                height + "\n";
+                height;
                 // create point id
 
     }
@@ -133,7 +136,7 @@ public class CsvToDxf {
         // text position
         double textHeight = Double.parseDouble(this.config.get("textHeight"));
         double textEasting = Double.parseDouble(easting) + textHeight;
-        double textNorthing = Double.parseDouble(northing)  - (textHeight * 0.5 * order);
+        double textNorthing = Double.parseDouble(northing)  - (textHeight * 1.2 * order);
         return  " 0\n" +
                 "TEXT\n" +
                 " 8\n" +
@@ -158,7 +161,7 @@ public class CsvToDxf {
         // text position
         double textHeight = Double.parseDouble(this.config.get("textHeight"));
         double textEasting = Double.parseDouble(easting) + textHeight;
-        double textNorthing = Double.parseDouble(northing)  - (textHeight * 0.5 * order);
+        double textNorthing = Double.parseDouble(northing)  - (textHeight * 1.2 * order);
         return  " 0\n" +
                 "TEXT\n" +
                 " 8\n" +
@@ -183,7 +186,7 @@ public class CsvToDxf {
         // text position
         double textHeight = Double.parseDouble(this.config.get("textHeight"));
         double textEasting = Double.parseDouble(easting) + textHeight;
-        double textNorthing = Double.parseDouble(northing)  - (textHeight * 0.5 * order);
+        double textNorthing = Double.parseDouble(northing)  - (textHeight * 1.2 * order);
         return  " 0\n" +
                 "TEXT\n" +
                 " 8\n" +
