@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Open Input..." />
+                  <MenuItem mnemonicParsing="false" text="Save as..." />
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <HBox spacing="8.0">
+         <children>
+            <Label text="Input, CSV" />
+            <TextField />
+            <Button mnemonicParsing="false" text="Browse" />
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+      </HBox>
+      <HBox spacing="8.0">
+         <children>
+            <Label text="Output, DXF" />
+            <TextField />
+            <Button mnemonicParsing="false" text="Browse" />
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+      </HBox>
+      <TableView prefHeight="145.0" prefWidth="600.0">
+        <columns>
+          <TableColumn prefWidth="104.0" text="C1" />
+          <TableColumn prefWidth="147.0" text="C2" />
+        </columns>
+         <VBox.margin>
+            <Insets bottom="8.0" top="8.0" />
+         </VBox.margin>
+      </TableView>
+      <HBox>
+         <children>
+            <SplitPane dividerPositions="0.41708542713567837">
+              <items>
+                <AnchorPane SplitPane.resizableWithParent="false">
+                     <children>
+                        <VBox>
+                           <children>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Label text="Separator" />
+                                    <ChoiceBox prefWidth="150.0" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="101.0" text="Text Height" />
+                                    <TextField alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="116.0" text="1.0" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane SplitPane.resizableWithParent="false">
+                     <children>
+                        <RadioButton mnemonicParsing="false" text="3D">
+                           <padding>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </padding>
+                        </RadioButton>
+                     </children>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </HBox>
+      <VBox prefHeight="115.0" prefWidth="600.0" spacing="8.0">
+         <children>
+            <CheckBox mnemonicParsing="false" text="Point Number" />
+            <CheckBox mnemonicParsing="false" text="Height" />
+            <CheckBox mnemonicParsing="false" text="Coordinates" />
+            <CheckBox mnemonicParsing="false" text="Code" />
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+      </VBox>
+      <HBox>
+         <children>
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" text="Convert">
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>
