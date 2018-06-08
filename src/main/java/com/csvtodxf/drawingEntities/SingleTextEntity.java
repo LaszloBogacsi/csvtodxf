@@ -1,4 +1,4 @@
-package drawingEntities;
+package com.csvtodxf.drawingEntities;
 
 public class SingleTextEntity extends DrawingEntity {
     private final String textContent;

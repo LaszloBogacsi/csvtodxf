@@ -1,4 +1,4 @@
-package ui;
+package com.csvtodxf.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,10 +8,13 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    Stage mainStage;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-        primaryStage.setTitle("CSV to DXF");
+        mainStage = primaryStage;
+        Parent root = FXMLLoader.load(getClass().getResource("/com/csvtodxf/ui/main.fxml"));
+        primaryStage.setTitle("CSV to com.csvtodxf.DXF");
         primaryStage.setScene(new Scene(root, 600, 600));
         primaryStage.show();
     }

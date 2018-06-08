@@ -1,4 +1,4 @@
-package drawingEntities;
+package com.csvtodxf.drawingEntities;
 
 public class Position {
     private double e;

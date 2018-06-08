@@ -1,3 +1,5 @@
+package com.csvtodxf;
+
 public class StringTemplate {
 
     public static String getPointStringTemplate() {

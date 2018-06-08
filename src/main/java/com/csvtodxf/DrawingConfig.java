@@ -1,3 +1,5 @@
+package com.csvtodxf;
+
 import java.nio.file.Path;
 
 public class DrawingConfig {
@@ -124,5 +126,20 @@ public class DrawingConfig {
         public DrawingConfig build() {
             return new DrawingConfig(inputPath, outputPath, separator, textHeight, doPrintId, doPrintCoords, doPrintCode, doPrintHeight, is3D);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "DrawingConfig{" +
+                "inputPath=" + inputPath +
+                ", outputPath=" + outputPath +
+                ", separator='" + separator + '\'' +
+                ", textHeight=" + textHeight +
+                ", doPrintId=" + doPrintId +
+                ", doPrintCoords=" + doPrintCoords +
+                ", doPrintCode=" + doPrintCode +
+                ", doPrintHeight=" + doPrintHeight +
+                ", is3D=" + is3D +
+                '}';
     }
 }

@@ -3,7 +3,7 @@
 This tool converts a list of comma separated coordinate pairs and point numbers to a dxf drawing.
 
 
-**CSV file structure:**  
+**CSV com.csvtodxf.file structure:**  
 P,E,N,H,C
 
 - `P` - point number/name] 
@@ -15,7 +15,7 @@ command example:
 `$  csvtodxf <path-to-input-filename-wo-extension> <path-to-output-filename-wo-extension>`
 
 - `- help` print this help
-- input filename - the path to input file [ MANDATORY ]  
+- input filename - the path to input com.csvtodxf.file [ MANDATORY ]  
 - path to output filename [ MANDATORY ]  
 - `-h n.n` text height in drawing units [default: 0.2] [ OPTIONAL ]  
 - `-s n.n` scale [default: 1] [ OPTIONAL ]

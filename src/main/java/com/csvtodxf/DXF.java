@@ -1,6 +1,8 @@
-import drawingEntities.PointDrawingEntity;
-import drawingEntities.Position;
-import drawingEntities.SingleTextEntity;
+package com.csvtodxf;
+
+import com.csvtodxf.drawingEntities.PointDrawingEntity;
+import com.csvtodxf.drawingEntities.Position;
+import com.csvtodxf.drawingEntities.SingleTextEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
