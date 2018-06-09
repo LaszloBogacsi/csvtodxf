@@ -15,6 +15,8 @@ public class Main extends Application {
         mainStage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/com/csvtodxf/ui/main.fxml"));
         primaryStage.setTitle("CSV to com.csvtodxf.DXF");
+        primaryStage.setMinWidth(500);
+        primaryStage.setMinHeight(560);
         primaryStage.setScene(new Scene(root, 600, 600));
         primaryStage.show();
     }
