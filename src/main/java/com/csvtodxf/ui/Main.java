@@ -17,7 +17,9 @@ public class Main extends Application {
         primaryStage.setTitle("CSV to com.csvtodxf.DXF");
         primaryStage.setMinWidth(500);
         primaryStage.setMinHeight(560);
-        primaryStage.setScene(new Scene(root, 600, 600));
+        Scene scene = new Scene(root, 600, 600);
+        scene.getStylesheets().add(getClass().getResource("/com/csvtodxf/ui/main.css").toString());
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

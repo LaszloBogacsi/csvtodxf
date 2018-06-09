@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="rootVBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csvtodxf.ui.Controller">
+<VBox fx:id="rootVBox" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csvtodxf.ui.Controller">
    <children>
       <MenuBar>
         <menus>
@@ -23,7 +24,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <HBox alignment="CENTER_LEFT" spacing="8.0">
+      <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="background">
          <children>
             <Label text="Input, CSV" />
             <TextField fx:id="inputTextField" editable="false" HBox.hgrow="ALWAYS">
@@ -36,7 +37,7 @@
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
          </padding>
       </HBox>
-      <HBox alignment="CENTER_LEFT" spacing="8.0">
+      <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="background">
          <children>
             <Label text="Output, DXF" />
             <TextField fx:id="outputTextField" editable="false" HBox.hgrow="ALWAYS" />
@@ -58,7 +59,7 @@
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
          </VBox.margin>
       </TableView>
-      <VBox>
+      <VBox styleClass="background">
          <children>
             <Label text="Drawing Settings">
                <padding>
@@ -73,7 +74,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="8.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label text="Separator" />
-                        <ChoiceBox fx:id="choiceBoxSep" />
+                        <ChoiceBox fx:id="choiceBoxSep" style="-fx-background-radius: 0;" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="8.0" HBox.hgrow="ALWAYS">
@@ -106,7 +107,7 @@
             </HBox>
          </children>
       </VBox>
-      <VBox prefHeight="115.0" prefWidth="600.0" spacing="8.0">
+      <VBox prefHeight="115.0" prefWidth="600.0" spacing="8.0" styleClass="background">
          <children>
             <Label text="Drawing Display">
                <font>
@@ -137,7 +138,7 @@
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
          </padding>
       </VBox>
-      <HBox>
+      <HBox styleClass="background">
          <children>
             <Pane HBox.hgrow="ALWAYS" />
             <Button fx:id="convertButton" mnemonicParsing="false" text="Convert">

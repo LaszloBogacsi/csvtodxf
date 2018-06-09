@@ -19,10 +19,14 @@ public class CsvToDxf implements Converter {
 
     @Override
     public void convert(DrawingConfig config) {
+        long start = System.currentTimeMillis();
         this.config = config;
         String dxf = new DXF(config).createDxf(readLines());
         try {
             saveToFile(dxf);
+            long duration = System.currentTimeMillis() - start;
+            System.out.println("config = " + config);
+            System.out.println("duration = " + duration + " ms");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -35,6 +39,7 @@ public class CsvToDxf implements Converter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("number of lines = " + lines.size());
         return lines;
     }
 
