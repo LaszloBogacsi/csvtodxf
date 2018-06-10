@@ -7,11 +7,13 @@ import com.csvtodxf.DrawingConfig;
 import com.csvtodxf.file.CsvFileReader;
 import com.csvtodxf.file.CsvLine;
 import com.csvtodxf.file.FileReader;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -77,6 +79,11 @@ public class Controller {
                 });
         textHeightField.setText(DEFAULT_TEXT_HEIGHT);
         dimensionGroup = new ToggleGroup();
+        convertButton.disableProperty()
+                .bind(Bindings.isEmpty(inputTextField.textProperty())
+                        .or(Bindings.isEmpty(outputTextField.textProperty())
+                        .or(Bindings.isEmpty(textHeightField.textProperty()))
+                ));
         convertButton.setOnAction(e -> convert(e));
 
     }
