@@ -13,10 +13,6 @@ public class CsvToDxf implements Converter {
 
     public CsvToDxf() { }
 
-    public CsvToDxf(DrawingConfig config) {
-        this.config = config;
-    }
-
     @Override
     public void convert(DrawingConfig config) {
         long start = System.currentTimeMillis();
@@ -25,8 +21,6 @@ public class CsvToDxf implements Converter {
         try {
             saveToFile(dxf);
             long duration = System.currentTimeMillis() - start;
-            System.out.println("config = " + config);
-            System.out.println("duration = " + duration + " ms");
         } catch (IOException e) {
             System.out.println(e);
         }
