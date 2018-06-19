@@ -49,6 +49,7 @@ public class Controller {
     @FXML private CheckBox heightCheckBox;
     @FXML private CheckBox coordinatedCheckBox;
     @FXML private CheckBox codeCheckBox;
+    @FXML private CheckBox layersByCodeCheckbox;
     @FXML private ToggleGroup dimensionGroup;
     @FXML private RadioButton is3DButton;
 
@@ -136,6 +137,7 @@ public class Controller {
         configBuilder.setDoPrintCoords(coordinatedCheckBox.isSelected());
         configBuilder.setDoPrintCode(codeCheckBox.isSelected());
         configBuilder.setIs3D(is3DButton.isSelected());
+        configBuilder.setLayerByCode(layersByCodeCheckbox.isSelected());
 
         Converter converter = new CsvToDxf();
         converter.convert(configBuilder.build());

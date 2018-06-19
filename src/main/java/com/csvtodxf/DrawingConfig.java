@@ -12,6 +12,7 @@ public class DrawingConfig {
     private boolean doPrintCode;
     private boolean doPrintHeight;
     private boolean is3D;
+    private boolean isLayerByCode;
 
     public Path getInputPath() {
         return inputPath;
@@ -49,7 +50,11 @@ public class DrawingConfig {
         return is3D;
     }
 
-    private DrawingConfig(Path inputPath, Path outputPath, String separator, double textHeight, boolean doPrintId, boolean doPrintCoords, boolean doPrintCode, boolean doPrintHeight, boolean is3D) {
+    public boolean isLayerByCode() {
+        return isLayerByCode;
+    }
+
+    private DrawingConfig(Path inputPath, Path outputPath, String separator, double textHeight, boolean doPrintId, boolean doPrintCoords, boolean doPrintCode, boolean doPrintHeight, boolean is3D, boolean isLayerByCode) {
         this.inputPath = inputPath;
         this.outputPath = outputPath;
         this.separator = separator;
@@ -59,6 +64,7 @@ public class DrawingConfig {
         this.doPrintCode = doPrintCode;
         this.doPrintHeight = doPrintHeight;
         this.is3D = is3D;
+        this.isLayerByCode = isLayerByCode;
     }
 
     public static DrawingConfigBuilder builder(){
@@ -75,7 +81,7 @@ public class DrawingConfig {
         private boolean doPrintCode;
         private boolean doPrintHeight;
         private boolean is3D;
-
+        private boolean isLayerByCode;
 
 
         public DrawingConfigBuilder setInputPath(Path inputPath) {
@@ -123,23 +129,13 @@ public class DrawingConfig {
             return this;
         }
 
-        public DrawingConfig build() {
-            return new DrawingConfig(inputPath, outputPath, separator, textHeight, doPrintId, doPrintCoords, doPrintCode, doPrintHeight, is3D);
+        public DrawingConfigBuilder setLayerByCode(boolean layerByCode) {
+            isLayerByCode = layerByCode;
+            return this;
         }
-    }
 
-    @Override
-    public String toString() {
-        return "DrawingConfig{" +
-                "inputPath=" + inputPath +
-                ", outputPath=" + outputPath +
-                ", separator='" + separator + '\'' +
-                ", textHeight=" + textHeight +
-                ", doPrintId=" + doPrintId +
-                ", doPrintCoords=" + doPrintCoords +
-                ", doPrintCode=" + doPrintCode +
-                ", doPrintHeight=" + doPrintHeight +
-                ", is3D=" + is3D +
-                '}';
+        public DrawingConfig build() {
+            return new DrawingConfig(inputPath, outputPath, separator, textHeight, doPrintId, doPrintCoords, doPrintCode, doPrintHeight, is3D, isLayerByCode);
+        }
     }
 }

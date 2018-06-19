@@ -1,4 +1,4 @@
-package com.csvtodxf.ui;
+package com.csvtodxf;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
