@@ -23,11 +23,6 @@ public class DXF {
 
     public String createDxf(List<String> lines) {
 
-        String pointsLayerName = "Points";
-        String pointIDLayerName = "Text_id";
-        String heightLayerName = "Height";
-        String coordinatesLayerName = "Coords";
-        String codeLayerName = "Code";
         double textHeight = this.config.getTextHeight();
 
         // Assumed order of parameters in line: P,E,N,H,C
@@ -41,11 +36,6 @@ public class DXF {
                 position = new Position(Double.parseDouble(input[1]), Double.parseDouble(input[2]), positionH);
             } else {
                 position = new Position(Double.parseDouble(input[1]), Double.parseDouble(input[2]), 0.0);
-            }
-
-            if(this.config.isLayerByCode()) {
-
-//                pointsLayerName = pointIDLayerName = heightLayerName = coordinatesLayerName = codeLayerName;
             }
 
             PointDrawingEntity point = new PointDrawingEntity(position, getLayerNameFor(EntityType.POINTS, input));
@@ -92,11 +82,7 @@ public class DXF {
 
     private String getLayerNameFor(EntityType entityType, String[] input) {
         if (this.config.isLayerByCode()) {
-            if (input.length > 4) {
-                return input[4];
-            } else {
-                return "Unknown_Code";
-            }
+            return input.length > 4 ? input[4] : "Unknown_Code";
         }
         return this.defaultLayerNames.get(entityType);
     }

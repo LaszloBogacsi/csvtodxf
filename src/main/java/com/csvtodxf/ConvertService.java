@@ -11,6 +11,7 @@ public class ConvertService extends Service<String> {
             @Override
             protected String call() throws Exception {
                 updateMessage("message");
+
                 return null;
             }
         };

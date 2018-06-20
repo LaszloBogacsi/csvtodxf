@@ -89,6 +89,9 @@ public class Controller {
                 ));
         convertButton.setOnAction(e -> convert(e));
 
+        ConvertService convertService = new ConvertService();
+        convertService.start();
+
     }
 
     private void openAbout(ActionEvent e) {
@@ -142,8 +145,7 @@ public class Controller {
         configBuilder.setIs3D(is3DButton.isSelected());
         configBuilder.setLayerByCode(layersByCodeCheckbox.isSelected());
 
-        ConvertService convertService = new ConvertService(); // need to pass in the configs somehow or call a method from the service in the controller that knows about the config.
-        convertService.start();
+
 
         Converter converter = new CsvToDxf();
         converter.convert(configBuilder.build());
