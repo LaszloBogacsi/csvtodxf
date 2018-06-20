@@ -1,5 +1,5 @@
 package com.csvtodxf;
 
 public interface Converter {
-    void convert(DrawingConfig config);
+    void convert(DrawingConfig config) throws Exception;
 }

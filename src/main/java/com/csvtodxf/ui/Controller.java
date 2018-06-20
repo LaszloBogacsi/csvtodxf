@@ -1,10 +1,7 @@
 package com.csvtodxf.ui;
 
 
-import com.csvtodxf.ConvertService;
-import com.csvtodxf.Converter;
-import com.csvtodxf.CsvToDxf;
-import com.csvtodxf.DrawingConfig;
+import com.csvtodxf.*;
 import com.csvtodxf.file.CsvFileReader;
 import com.csvtodxf.file.CsvLine;
 import com.csvtodxf.file.FileReader;
@@ -12,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -89,9 +87,6 @@ public class Controller {
                 ));
         convertButton.setOnAction(e -> convert(e));
 
-        ConvertService convertService = new ConvertService();
-        convertService.start();
-
     }
 
     private void openAbout(ActionEvent e) {
@@ -136,7 +131,52 @@ public class Controller {
 
 
     private void convert(ActionEvent e) {
-        progressIndicator.setVisible(true);
+        ConversionReport report = new ConversionReport();
+        final Task task;
+        convertButton.setVisible(false);
+        convertButton.setManaged(false);
+        task = new Task<ConversionReport> () {
+            @Override
+            protected ConversionReport call() throws Exception {
+                progressIndicator.setVisible(true);
+                Converter converter = new CsvToDxf(report);
+                converter.convert(assembleConfig());
+                return report;
+            }
+
+            @Override
+            protected void succeeded() {
+                progressIndicator.setVisible(false);
+                convertButton.setManaged(true);
+                convertButton.setVisible(true);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Conversion Successful");
+                alert.setHeaderText("Converted Successfully");
+                alert.setContentText(
+                        "Converted Lines:  " + report.getNumberOfLinesConverted() + "\n" +
+                        "File Size:                " + Math.round(report.getFileSize()/1024*100)/100.0 + " kb\n" +
+                        "Duration:                 " + report.getDurationInMillies()/1000 + " second(s)");
+                alert.showAndWait();
+            }
+
+            @Override
+            protected void failed() {
+                progressIndicator.setVisible(false);
+                convertButton.setManaged(true);
+                convertButton.setVisible(true);
+                Throwable t = this.getException();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setHeaderText("An error occured");
+                alert.setContentText(t.toString());
+                alert.showAndWait();
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.start();
+    }
+
+    private DrawingConfig assembleConfig() {
         configBuilder.setTextHeight(parseStringInputToDouble(textHeightField.getText()));
         configBuilder.setDoPrintId(pointNumberCheckBox.isSelected());
         configBuilder.setDoPrintHeight(heightCheckBox.isSelected());
@@ -144,17 +184,7 @@ public class Controller {
         configBuilder.setDoPrintCode(codeCheckBox.isSelected());
         configBuilder.setIs3D(is3DButton.isSelected());
         configBuilder.setLayerByCode(layersByCodeCheckbox.isSelected());
-
-
-
-        Converter converter = new CsvToDxf();
-        converter.convert(configBuilder.build());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-        progressIndicator.setVisible(false);
+        return configBuilder.build();
     }
 
     /**

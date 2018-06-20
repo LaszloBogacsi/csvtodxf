@@ -1,44 +1,41 @@
 package com.csvtodxf;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CsvToDxf implements Converter {
 
     private DrawingConfig config;
+    private ConversionReport report;
 
-    public CsvToDxf() { }
+    public CsvToDxf(ConversionReport conversionReport) {
+        this.report = conversionReport;
+    }
 
     @Override
-    public void convert(DrawingConfig config) {
+    public void convert(DrawingConfig config) throws IOException {
         long start = System.currentTimeMillis();
         this.config = config;
         String dxf = new DXF(config).createDxf(readLines());
-        try {
-            saveToFile(dxf);
-            long duration = System.currentTimeMillis() - start;
-        } catch (IOException e) {
-            System.out.println(e);
-        }
+        saveToFile(dxf);
+        long duration = System.currentTimeMillis() - start;
+        report.setDurationInMillies(duration);
     }
 
-    public List<String> readLines() {
-        List<String> lines = new ArrayList<>();
-        try(Stream<String> stream = Files.lines(this.config.getInputPath())) {
-            lines = stream.collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("number of lines = " + lines.size());
+    private List<String> readLines() throws IOException {
+        List<String> lines = Files.lines(this.config.getInputPath()).collect(Collectors.toList());
+        report.setNumberOfLinesConverted(lines.size()); // TODO: count the converted lines instead after conversion in the converter
         return lines;
     }
 
-    public boolean saveToFile(String dxf) throws IOException {
-        Files.write(this.config.getOutputPath(), dxf.getBytes());
+    private boolean saveToFile(String dxf) throws IOException {
+        Path newFile = Files.write(this.config.getOutputPath(), dxf.getBytes());
+        File file = new File(String.valueOf(newFile));
+        report.setFileSize(file.length());
         return true;
     }
 }

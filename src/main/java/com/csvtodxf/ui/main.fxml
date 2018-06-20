@@ -107,46 +107,57 @@
             </HBox>
          </children>
       </VBox>
-      <VBox prefHeight="115.0" prefWidth="600.0" spacing="8.0" styleClass="background">
+      <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Label text="Drawing Display">
-               <font>
-                  <Font size="14.0" />
-               </font>
+            <VBox prefHeight="115.0" prefWidth="600.0" spacing="8.0" styleClass="background">
+               <children>
+                  <Label text="Drawing Display">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </Label>
+                  <CheckBox fx:id="pointNumberCheckBox" mnemonicParsing="false" selected="true" text="Point Number">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="heightCheckBox" mnemonicParsing="false" selected="true" text="Height">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="coordinatedCheckBox" mnemonicParsing="false" text="Coordinates">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="codeCheckBox" mnemonicParsing="false" text="Code">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="layersByCodeCheckbox" mnemonicParsing="false" text="Layers By Code">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                  </CheckBox>
+               </children>
                <padding>
-                  <Insets bottom="8.0" right="8.0" top="8.0" />
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
-            </Label>
-            <CheckBox fx:id="pointNumberCheckBox" mnemonicParsing="false" selected="true" text="Point Number">
-               <VBox.margin>
-                  <Insets left="8.0" />
-               </VBox.margin></CheckBox>
-            <CheckBox fx:id="heightCheckBox" mnemonicParsing="false" selected="true" text="Height">
-               <VBox.margin>
-                  <Insets left="8.0" />
-               </VBox.margin></CheckBox>
-            <CheckBox fx:id="coordinatedCheckBox" mnemonicParsing="false" text="Coordinates">
-               <VBox.margin>
-                  <Insets left="8.0" />
-               </VBox.margin></CheckBox>
-            <CheckBox fx:id="codeCheckBox" mnemonicParsing="false" text="Code">
-               <VBox.margin>
-                  <Insets left="8.0" />
-               </VBox.margin></CheckBox>
-            <CheckBox fx:id="layersByCodeCheckbox" mnemonicParsing="false" text="Layers By Code">
-               <VBox.margin>
-                  <Insets left="8.0" />
-               </VBox.margin>
-            </CheckBox>
+            </VBox>
          </children>
-         <padding>
-            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-         </padding>
-      </VBox>
-      <HBox styleClass="background">
+      </HBox>
+      <HBox alignment="CENTER" styleClass="background">
          <children>
             <Pane HBox.hgrow="ALWAYS" />
-            <ProgressIndicator fx:id="progressIndicator" />
+            <ProgressIndicator fx:id="progressIndicator" visible="false">
+               <HBox.margin>
+                  <Insets bottom="12.0" left="12.0" top="12.0" />
+               </HBox.margin></ProgressIndicator>
             <Button fx:id="convertButton" mnemonicParsing="false" text="Convert">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
