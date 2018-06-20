@@ -1,6 +1,7 @@
 package com.csvtodxf.ui;
 
 
+import com.csvtodxf.ConvertService;
 import com.csvtodxf.Converter;
 import com.csvtodxf.CsvToDxf;
 import com.csvtodxf.DrawingConfig;
@@ -54,6 +55,7 @@ public class Controller {
     @FXML private RadioButton is3DButton;
 
     @FXML private Button convertButton;
+    @FXML private ProgressIndicator progressIndicator;
 
     @FXML
     public void initialize() {
@@ -131,6 +133,7 @@ public class Controller {
 
 
     private void convert(ActionEvent e) {
+        progressIndicator.setVisible(true);
         configBuilder.setTextHeight(parseStringInputToDouble(textHeightField.getText()));
         configBuilder.setDoPrintId(pointNumberCheckBox.isSelected());
         configBuilder.setDoPrintHeight(heightCheckBox.isSelected());
@@ -139,8 +142,17 @@ public class Controller {
         configBuilder.setIs3D(is3DButton.isSelected());
         configBuilder.setLayerByCode(layersByCodeCheckbox.isSelected());
 
+        ConvertService convertService = new ConvertService(); // need to pass in the configs somehow or call a method from the service in the controller that knows about the config.
+        convertService.start();
+
         Converter converter = new CsvToDxf();
         converter.convert(configBuilder.build());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+        progressIndicator.setVisible(false);
     }
 
     /**
