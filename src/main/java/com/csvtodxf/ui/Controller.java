@@ -1,10 +1,7 @@
 package com.csvtodxf.ui;
 
 
-import com.csvtodxf.ConversionReport;
-import com.csvtodxf.Converter;
-import com.csvtodxf.CsvToDxf;
-import com.csvtodxf.DrawingConfig;
+import com.csvtodxf.*;
 import com.csvtodxf.file.CsvFileReader;
 import com.csvtodxf.file.CsvLine;
 import com.csvtodxf.file.FileReader;
@@ -29,6 +26,21 @@ import java.util.List;
 public class Controller {
     private final int PREVIEW_LIST_LENGTH = 5;
     private DrawingConfig.DrawingConfigBuilder configBuilder = DrawingConfig.builder();
+    private final String DEFAULT_SEP = ",";
+    private final String DEFAULT_TEXT_HEIGHT = "1.0";
+    private Main main;
+    FileReader reader = new CsvFileReader();
+
+
+    public String getAbsInputFilePath() {
+        return absInputFilePath;
+    }
+
+    public void setAbsInputFilePath(String absInputFilePath) {
+        this.absInputFilePath = absInputFilePath;
+    }
+
+    private String absInputFilePath;
     @FXML
     private VBox rootVBox;
     @FXML
@@ -77,7 +89,6 @@ public class Controller {
     private ToggleGroup dimensionGroup;
     @FXML
     private RadioButton is3DButton;
-
     @FXML
     private Button convertButton;
     @FXML
@@ -85,16 +96,14 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        openMenu.setOnAction(e -> browseInput(e));
-        saveAsMenu.setOnAction(e -> browseOutput(e));
+        openMenu.setOnAction(this::browseInput);
+        saveAsMenu.setOnAction(this::browseOutput);
         closeMenu.setOnAction(e -> System.exit(0));
-        aboutMenu.setOnAction(e -> openAbout(e));
-        inputBrowseButton.setOnAction(e -> browseInput(e));
-        outputBrowseButton.setOnAction(e -> browseOutput(e));
-        previewTable.setPlaceholder(new Label("Load an input file for content to appear"));
+        aboutMenu.setOnAction(this::openAbout);
+        inputBrowseButton.setOnAction(this::browseInput);
+        outputBrowseButton.setOnAction(this::browseOutput);
+        previewTable.setPlaceholder(new Label("Open an input file for content to appear"));
         ObservableList<String> options = FXCollections.observableArrayList(",", ";");
-        final String DEFAULT_SEP = ",";
-        final String DEFAULT_TEXT_HEIGHT = "1.0";
         configBuilder.setSeparator(DEFAULT_SEP);
         choiceBoxSep.setValue(DEFAULT_SEP);
         choiceBoxSep.setItems(options);
@@ -102,7 +111,7 @@ public class Controller {
                 .selectedItemProperty()
                 .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
                     configBuilder.setSeparator(newValue);
-                    String absInputFilePath = inputTextField.getText();
+                    String absInputFilePath = getAbsInputFilePath();
                     if (!absInputFilePath.isEmpty()) {
                         reloadPreview(absInputFilePath, newValue);
                     }
@@ -114,8 +123,12 @@ public class Controller {
                         .or(Bindings.isEmpty(outputTextField.textProperty())
                                 .or(Bindings.isEmpty(textHeightField.textProperty()))
                         ));
-        convertButton.setOnAction(e -> convert(e));
+        convertButton.setOnAction(this::convert);
 
+    }
+
+    public void setMainApp(Main mainApp) {
+        this.main = mainApp;
     }
 
     private void openAbout(ActionEvent e) {
@@ -137,12 +150,11 @@ public class Controller {
         File selectedFile = inputFilechooser.showOpenDialog(stage);
         if (selectedFile != null) {
             String absInputFilePath = selectedFile.getPath();
-            inputTextField.setText(absInputFilePath);
+            inputTextField.setText(selectedFile.getName());
             configBuilder.setInputPath(Paths.get(absInputFilePath));
             reloadPreview(absInputFilePath, choiceBoxSep.getValue());
+            setAbsInputFilePath(absInputFilePath);
         }
-
-
     }
 
     private void browseOutput(ActionEvent e) {
@@ -154,24 +166,23 @@ public class Controller {
         File selectedFile = outputFilechooser.showSaveDialog(stage);
         if (selectedFile != null) {
             String absInputFilePath = selectedFile.getPath();
-            outputTextField.setText(absInputFilePath);
+            outputTextField.setText(selectedFile.getName());
             configBuilder.setOutputPath(Paths.get(absInputFilePath));
         }
     }
-
 
     private void convert(ActionEvent e) {
         ConversionReport report = new ConversionReport();
         final Task task;
         convertButton.setVisible(false);
         convertButton.setManaged(false);
-        task = new Task<ConversionReport>() {
+        task = new Task<Void>() {
             @Override
-            protected ConversionReport call() throws Exception {
+            protected Void call() throws Exception {
                 progressIndicator.setVisible(true);
-                Converter converter = new CsvToDxf(report);
+                Converter converter = new CsvToDxf(reader, report);
                 converter.convert(assembleConfig());
-                return report;
+                return null;
             }
 
             @Override
@@ -179,15 +190,7 @@ public class Controller {
                 progressIndicator.setVisible(false);
                 convertButton.setManaged(true);
                 convertButton.setVisible(true);
-                ConvertResultDialog resultDialog = new ConvertResultDialog(report);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Conversion Successful");
-                alert.setHeaderText("Converted Successfully");
-                alert.setContentText(
-                        "Converted Lines:  " + report.getNumberOfLinesConverted() + "\n" +
-                                "File Size:                " + Math.round(report.getFileSize() / 1024 * 100) / 100.0 + " kb\n" +
-                                "Duration:                 " + report.getDurationInMillies() / 1000 + " second(s)");
-                alert.showAndWait();
+                main.showConvertResultDialog(report);
             }
 
             @Override
@@ -196,15 +199,19 @@ public class Controller {
                 convertButton.setManaged(true);
                 convertButton.setVisible(true);
                 Throwable t = this.getException();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("ERROR");
-                alert.setHeaderText("An error occured");
-                alert.setContentText(t.toString());
-                alert.showAndWait();
+                showAlertDialog(t);
             }
         };
         Thread thread = new Thread(task);
         thread.start();
+    }
+
+    private void showAlertDialog(Throwable t) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("CSV to DXF - ERROR");
+        alert.setHeaderText("An error occured");
+        alert.setContentText(t.toString());
+        alert.showAndWait();
     }
 
     private DrawingConfig assembleConfig() {
@@ -219,15 +226,14 @@ public class Controller {
     }
 
     /**
-     * Creates a read only table to preview the first n lines of the input com.csvtodxf.file
+     * Creates a read only table to preview the first n lines of the input file
      *
-     * @param path to the input com.csvtodxf.file, String, absolute path
+     * @param path to the input file, String, absolute path
      */
     private void reloadPreview(String path, String separator) {
         // clear table before reload
         previewTable.getItems().clear();
-        FileReader reader = new CsvFileReader();
-        List<CsvLine> previewLines = reader.readBeginning(path, PREVIEW_LIST_LENGTH, separator);
+        List<CsvLine> previewLines = reader.readBeginning(Paths.get(path), PREVIEW_LIST_LENGTH, separator);
         // map columns to data properties in CSV lines type
         pointIdCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement"));
         eastingCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement1"));
@@ -239,11 +245,6 @@ public class Controller {
     }
 
     private double parseStringInputToDouble(String input) {
-        // TODO: handle numberformat exception in case of incorrect input format
         return Double.parseDouble(input.replaceAll(",", ".").replaceAll("[^0-9.]+", ""));
     }
-
-    // TODO: if user changes the com.csvtodxf.file path in the text field then set a listener to followup the change and reload the table with sampledata.
-
-
 }

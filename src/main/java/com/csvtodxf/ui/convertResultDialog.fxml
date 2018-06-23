@@ -1,19 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<GridPane fx:id="mainGrid" hgap="18.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="350.0" styleClass="background" stylesheets="@main.css" vgap="8.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csvtodxf.ui.ConvertResultDialog">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.0" minWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="424.0" minWidth="10.0" prefWidth="196.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="215.0" minHeight="10.0" prefHeight="96.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="125.0" minHeight="0.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="43.0" minHeight="0.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="52.0" minHeight="10.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="52.0" minHeight="10.0" vgrow="SOMETIMES" />
   </rowConstraints>
+   <children>
+      <Label text="DONE" GridPane.columnIndex="1">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label text="Duration: " GridPane.rowIndex="2" />
+      <Label text="File size:" GridPane.rowIndex="3" />
+      <Label text="Lines converted:" GridPane.rowIndex="1" />
+      <Label fx:id="numberOfLinesLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label fx:id="durationLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label fx:id="fileSizeLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Button fx:id="okButton" mnemonicParsing="false" onAction="#okPressed" text="OK" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets right="16.0" />
+         </GridPane.margin></Button>
+      <ImageView fitHeight="66.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../resources/if_tick_58022.png" />
+         </image>
+         <GridPane.margin>
+            <Insets left="16.0" />
+         </GridPane.margin>
+      </ImageView>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
 </GridPane>
