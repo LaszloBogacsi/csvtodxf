@@ -4,6 +4,7 @@ import com.csvtodxf.drawingEntities.EntityType;
 import com.csvtodxf.drawingEntities.PointDrawingEntity;
 import com.csvtodxf.drawingEntities.Position;
 import com.csvtodxf.drawingEntities.SingleTextEntity;
+import com.csvtodxf.file.CsvLine;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,47 +22,46 @@ public class DXF {
         initDefaultLayerNamesMap();
     }
 
-    public String createDxf(List<String> lines) {
+    public String createDxf(List<CsvLine> lines) {
 
         double textHeight = this.config.getTextHeight();
 
         // Assumed order of parameters in line: P,E,N,H,C
-        String entities =  lines.stream().filter(line -> !line.isEmpty()).map(line -> {
+        String entities =  lines.stream().map(line -> {
             StringBuilder sb = new StringBuilder();
-            String [] input = line.split(this.config.getSeparator());
-
+            int csvLinelength = line.getLength();
             Position position;
             if (config.isIs3D()) {
-                double positionH = input.length > 3 ? Double.parseDouble(input[3]) : 0.0;
-                position = new Position(Double.parseDouble(input[1]), Double.parseDouble(input[2]), positionH);
+                double positionH = csvLinelength > 3 ? Double.parseDouble(line.getLineElement3()) : 0.0;
+                position = new Position(Double.parseDouble(line.getLineElement1()), Double.parseDouble(line.getLineElement2()), positionH);
             } else {
-                position = new Position(Double.parseDouble(input[1]), Double.parseDouble(input[2]), 0.0);
+                position = new Position(Double.parseDouble(line.getLineElement1()), Double.parseDouble(line.getLineElement2()), 0.0);
             }
 
-            PointDrawingEntity point = new PointDrawingEntity(position, getLayerNameFor(EntityType.POINTS, input));
+            PointDrawingEntity point = new PointDrawingEntity(position, getLayerNameFor(EntityType.POINTS, line));
             sb.append(printPointDrawingEntity(point));
 
             if (config.doPrintId()) {
-                String id = input[0];
-                SingleTextEntity pointIdText = new SingleTextEntity(position, getLayerNameFor(EntityType.POINT_ID, input), id, textHeight);
+                String id = line.getLineElement();
+                SingleTextEntity pointIdText = new SingleTextEntity(position, getLayerNameFor(EntityType.POINT_ID, line), id, textHeight);
                 sb.append("\n").append(printSingleTextDrawingEntity(pointIdText, textHeight, textHeight * 0.5 * 1));
             }
 
             if (config.doPrintHeight()) {
-                String heightDisplayValue = input.length > 3 ? input[3] : "0";
-                SingleTextEntity heightText = new SingleTextEntity(position, getLayerNameFor(EntityType.HEIGHT, input), heightDisplayValue, textHeight);
+                String heightDisplayValue = csvLinelength > 3 ? line.getLineElement3() : "0";
+                SingleTextEntity heightText = new SingleTextEntity(position, getLayerNameFor(EntityType.HEIGHT, line), heightDisplayValue, textHeight);
                 sb.append("\n").append(printSingleTextDrawingEntity(heightText, textHeight,(textHeight * 1.5 * -1)));
             }
 
             if (config.doPrintCoords()) {
                 String coordinateTextContent = "E=" + position.getE() + " N=" + position.getN();
-                SingleTextEntity coordinateText = new SingleTextEntity(position, getLayerNameFor(EntityType.COORDS, input), coordinateTextContent, textHeight);
+                SingleTextEntity coordinateText = new SingleTextEntity(position, getLayerNameFor(EntityType.COORDS, line), coordinateTextContent, textHeight);
                 sb.append("\n").append(printSingleTextDrawingEntity(coordinateText, textHeight, (textHeight * 1.5 * -2)));
             }
 
             if (config.doPrintCode()) {
-                String code = input.length > 4 ? input[4] : "";
-                SingleTextEntity codeText = new SingleTextEntity(position, getLayerNameFor(EntityType.CODE, input), code, textHeight);
+                String code = csvLinelength > 4 ? line.getLineElement4() : "";
+                SingleTextEntity codeText = new SingleTextEntity(position, getLayerNameFor(EntityType.CODE, line), code, textHeight);
                 sb.append("\n").append(printSingleTextDrawingEntity(codeText, textHeight, (textHeight * 1.5 * -3)));
 
             }
@@ -80,9 +80,9 @@ public class DXF {
         this.defaultLayerNames.put(EntityType.CODE, "Code");
     }
 
-    private String getLayerNameFor(EntityType entityType, String[] input) {
+    private String getLayerNameFor(EntityType entityType, CsvLine line) {
         if (this.config.isLayerByCode()) {
-            return input.length > 4 ? input[4] : "Unknown_Code";
+            return line.getLength() > 4 ? line.getLineElement4() : "Unknown_Code";
         }
         return this.defaultLayerNames.get(entityType);
     }

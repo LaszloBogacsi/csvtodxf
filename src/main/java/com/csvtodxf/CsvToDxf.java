@@ -1,5 +1,8 @@
 package com.csvtodxf;
 
+import com.csvtodxf.file.CsvLine;
+import com.csvtodxf.file.FileReader;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,9 +13,11 @@ import java.util.stream.Collectors;
 public class CsvToDxf implements Converter {
 
     private DrawingConfig config;
+    private FileReader reader;
     private ConversionReport report;
 
-    public CsvToDxf(ConversionReport conversionReport) {
+    public CsvToDxf(FileReader reader, ConversionReport conversionReport) {
+        this.reader = reader;
         this.report = conversionReport;
     }
 
@@ -26,16 +31,15 @@ public class CsvToDxf implements Converter {
         report.setDurationInMillies(duration);
     }
 
-    private List<String> readLines() throws IOException {
-        List<String> lines = Files.lines(this.config.getInputPath()).collect(Collectors.toList());
+    private List<CsvLine> readLines() throws IOException {
+        List<CsvLine> lines = reader.readLine(this.config.getInputPath(), config.getSeparator());
         report.setNumberOfLinesConverted(lines.size()); // TODO: count the converted lines instead after conversion in the converter
         return lines;
     }
 
-    private boolean saveToFile(String dxf) throws IOException {
+    private void saveToFile(String dxf) throws IOException {
         Path newFile = Files.write(this.config.getOutputPath(), dxf.getBytes());
         File file = new File(String.valueOf(newFile));
         report.setFileSize(file.length());
-        return true;
     }
 }

@@ -7,6 +7,12 @@ public class CsvLine {
     private String lineElement2;
     private String lineElement3;
     private String lineElement4;
+    private int length;
+
+
+    public int getLength() {
+        return length;
+    }
 
     public String getLineElement() {
         return lineElement;
@@ -50,23 +56,28 @@ public class CsvLine {
 
     // to use in case of incorrect separator
     public CsvLine(String lineElement) {
-        this(lineElement, "", "", "", "");
+        this(lineElement, "", "", "", "", 1);
     }
 
     public CsvLine(String lineElement, String lineElement1, String lineElement2) {
-        this(lineElement, lineElement1, lineElement2, "", "");
+        this(lineElement, lineElement1, lineElement2, "", "", 3);
     }
 
     public CsvLine(String lineElement, String lineElement1, String lineElement2, String lineElement3) {
-        this(lineElement, lineElement1, lineElement2, lineElement3, "");
+        this(lineElement, lineElement1, lineElement2, lineElement3, "", 4);
 
     }
 
     public CsvLine(String lineElement, String lineElement1, String lineElement2, String lineElement3, String lineElement4) {
+        this(lineElement, lineElement1, lineElement2, lineElement3, lineElement4, 5);
+    }
+
+    private CsvLine(String lineElement, String lineElement1, String lineElement2, String lineElement3, String lineElement4, int length) {
         this.lineElement = lineElement;
         this.lineElement1 = lineElement1;
         this.lineElement2 = lineElement2;
         this.lineElement3 = lineElement3;
         this.lineElement4 = lineElement4;
+        this.length = length;
     }
 }
