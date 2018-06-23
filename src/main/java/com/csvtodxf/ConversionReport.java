@@ -6,11 +6,6 @@ public class ConversionReport {
     private double fileSize;
 
     public ConversionReport () { }
-    public ConversionReport(int numberOfLinesConverted, long durationInMillies, double fileSize) {
-        this.numberOfLinesConverted = numberOfLinesConverted;
-        this.durationInMillies = durationInMillies;
-        this.fileSize = fileSize;
-    }
 
     public long getNumberOfLinesConverted() {
         return numberOfLinesConverted;
@@ -34,14 +29,5 @@ public class ConversionReport {
 
     public void setFileSize(double fileSize) {
         this.fileSize = fileSize;
-    }
-
-    @Override
-    public String toString() {
-        return "ConversionReport{" +
-                "numberOfLinesConverted=" + numberOfLinesConverted +
-                ", durationInMillies=" + durationInMillies +
-                ", fileSize=" + fileSize +
-                '}';
     }
 }

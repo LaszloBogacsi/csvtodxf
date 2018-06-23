@@ -26,9 +26,10 @@ To use the program:
 - **Drawing Display**
   - Can choose to display the following propeties:
     `Point ID`, `Height`, `Coordinates`, `Code or description`
-  - `Layers by code` overrides the default setting and places all drawing elements to a layer named by the code property of a line, if not specified the layer name will be `unknown`(the text "Unknown_Code")
+  - `Layers by code` overrides the default setting and places all drawing elements to a layer named by the code property of a line, if not specified the layer name will be `Unknown_Code`
 - By default the drawing elements will be respectively on layers named as: `Point`, `Point_Id`, `Height`, `Coords`, `Code`.
 - Ignores empty lines, and trims whitespace from each column.
+- As a point marker it produces a `point` entity.
  
 ![](img/mainScreen.png)
 ![](img/confirmScreen.png)
