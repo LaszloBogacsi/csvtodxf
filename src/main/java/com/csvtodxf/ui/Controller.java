@@ -233,7 +233,7 @@ public class Controller {
     private void reloadPreview(String path, String separator) {
         // clear table before reload
         previewTable.getItems().clear();
-        List<CsvLine> previewLines = reader.readBeginning(Paths.get(path), PREVIEW_LIST_LENGTH, separator);
+        List<CsvLine> previewLines = reader.readLine(Paths.get(path), separator, PREVIEW_LIST_LENGTH);
         // map columns to data properties in CSV lines type
         pointIdCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement"));
         eastingCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement1"));

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DXF {
+    public static final double DEFAULT_HEIGHT = 0.0;
     private final String HEADER = " 0\nSECTION\n 2\nENTITIES\n";
     private final String FOOTER = "\n 0\nENDSEC\n 0\nEOF";
     private final DrawingConfig config;
@@ -27,15 +28,14 @@ public class DXF {
         double textHeight = this.config.getTextHeight();
 
         // Assumed order of parameters in line: P,E,N,H,C
-        String entities =  lines.stream().map(line -> {
+        String entities = lines.stream().map(line -> {
             StringBuilder sb = new StringBuilder();
-            int csvLinelength = line.getLength();
             Position position;
             if (config.isIs3D()) {
-                double positionH = csvLinelength > 3 ? Double.parseDouble(line.getLineElement3()) : 0.0;
+                double positionH = Double.parseDouble(line.getLineElement3().orElse(String.valueOf(DEFAULT_HEIGHT)));
                 position = new Position(Double.parseDouble(line.getLineElement1()), Double.parseDouble(line.getLineElement2()), positionH);
             } else {
-                position = new Position(Double.parseDouble(line.getLineElement1()), Double.parseDouble(line.getLineElement2()), 0.0);
+                position = new Position(Double.parseDouble(line.getLineElement1()), Double.parseDouble(line.getLineElement2()), DEFAULT_HEIGHT);
             }
 
             PointDrawingEntity point = new PointDrawingEntity(position, getLayerNameFor(EntityType.POINTS, line));
@@ -48,7 +48,7 @@ public class DXF {
             }
 
             if (config.doPrintHeight()) {
-                String heightDisplayValue = csvLinelength > 3 ? line.getLineElement3() : "0";
+                String heightDisplayValue = line.getLineElement3().orElse(String.valueOf(DEFAULT_HEIGHT));
                 SingleTextEntity heightText = new SingleTextEntity(position, getLayerNameFor(EntityType.HEIGHT, line), heightDisplayValue, textHeight);
                 sb.append("\n").append(printSingleTextDrawingEntity(heightText, textHeight,(textHeight * 1.5 * -1)));
             }
@@ -60,10 +60,9 @@ public class DXF {
             }
 
             if (config.doPrintCode()) {
-                String code = csvLinelength > 4 ? line.getLineElement4() : "";
+                String code = line.getLineElement4().orElse("");
                 SingleTextEntity codeText = new SingleTextEntity(position, getLayerNameFor(EntityType.CODE, line), code, textHeight);
                 sb.append("\n").append(printSingleTextDrawingEntity(codeText, textHeight, (textHeight * 1.5 * -3)));
-
             }
 
             return sb.toString();
@@ -82,7 +81,7 @@ public class DXF {
 
     private String getLayerNameFor(EntityType entityType, CsvLine line) {
         if (this.config.isLayerByCode()) {
-            return line.getLength() > 4 ? line.getLineElement4() : "Unknown_Code";
+            return line.getLineElement4().orElse("Unknown_Code");
         }
         return this.defaultLayerNames.get(entityType);
     }
@@ -98,11 +97,15 @@ public class DXF {
 
     private String printSingleTextDrawingEntity(SingleTextEntity entity,  double offsetE, double offsetN) {
         return StringTemplate.getSingleTextStringTemplate()
-                .replaceAll("\\{positionE}", String.valueOf(entity.getPosition().getE() + offsetE))
-                .replaceAll("\\{positionN}", String.valueOf(entity.getPosition().getN() + offsetN))
+                .replaceAll("\\{positionE}", String.valueOf(roundFloatingPointErrors(entity.getPosition().getE() + offsetE)))
+                .replaceAll("\\{positionN}", String.valueOf(roundFloatingPointErrors(entity.getPosition().getN() + offsetN)))
                 .replaceAll("\\{positionH}", String.valueOf(entity.getPosition().getH()))
                 .replaceAll("\\{layerName}", entity.getDestinationLayer())
                 .replaceAll("\\{textHeight}", String.valueOf(entity.getTextHeight()))
                 .replaceAll("\\{text}", entity.getTextContent());
+    }
+
+    private double roundFloatingPointErrors(double number) {
+        return Math.round(number * 1000) / 1000.0; // this infers the coordinates are in meter with mm precision: xx.xxx m
     }
 }

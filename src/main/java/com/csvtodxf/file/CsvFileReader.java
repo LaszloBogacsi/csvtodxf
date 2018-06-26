@@ -14,7 +14,7 @@ public class CsvFileReader implements FileReader {
 
 
     @Override
-    public List<CsvLine> readLine(Path path, String separator) {
+    public List<CsvLine> readLine(Path path, final String separator) {
         List<CsvLine> lines = new ArrayList<>();
         try (Stream<String> stream = Files.lines(path)) {
             lines = stream.filter(line -> line.trim().length() != 0).map(line -> createLine(line, separator)).collect(Collectors.toList());
@@ -25,7 +25,7 @@ public class CsvFileReader implements FileReader {
     }
 
     @Override
-    public List<CsvLine> readBeginning(Path path, int limit, final String separator) {
+    public List<CsvLine> readLine(Path path, final String separator, int limit) {
         List<CsvLine> lines = new ArrayList<>();
         try (Stream<String> stream = Files.lines(path)) {
             lines = stream.limit(limit).filter(line -> line.trim().length() != 0).map(line -> createLine(line, separator)).collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class CsvFileReader implements FileReader {
             case 5:
                 return new CsvLine(lineElements[0], lineElements[1], lineElements[2], lineElements[3], lineElements[4]);
             default:
-                return new CsvLine(lineElements[0]);
+                return new CsvLine(lineElements[0]); // throw exception
         }
     }
 }

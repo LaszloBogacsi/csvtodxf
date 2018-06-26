@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CsvToDxf implements Converter {
 
@@ -33,7 +32,7 @@ public class CsvToDxf implements Converter {
 
     private List<CsvLine> readLines() throws IOException {
         List<CsvLine> lines = reader.readLine(this.config.getInputPath(), config.getSeparator());
-        report.setNumberOfLinesConverted(lines.size()); // TODO: count the converted lines instead after conversion in the converter
+        report.setNumberOfLinesConverted(lines.size());
         return lines;
     }
 
