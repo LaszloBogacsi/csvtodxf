@@ -19,7 +19,7 @@ public class CsvToDxf implements Converter {
         this.reader = reader;
         this.report = conversionReport;
     }
-
+    // TODO: test this class
     @Override
     public void convert(DrawingConfig config) throws IOException {
         long start = System.currentTimeMillis();

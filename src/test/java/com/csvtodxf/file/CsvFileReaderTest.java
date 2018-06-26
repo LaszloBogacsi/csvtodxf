@@ -98,7 +98,7 @@ public class CsvFileReaderTest {
         assertThat(expected.get(1), samePropertyValuesAs(actual.get(1)));
     }
 
-    // a line has more than 5 elements
-    // can not open file -> error handling
+    // TODO: Test: a line has more than 5 elements
+    // TODO: Test: can not open file -> error handling
 
 }

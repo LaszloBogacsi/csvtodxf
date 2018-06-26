@@ -34,7 +34,7 @@ public class CsvFileReader implements FileReader {
         }
         return lines;
     }
-
+ // TODO: refactor this into it's own linefactory
     private CsvLine createLine(String line, String separator) {
         // trim whitespace
         String[] lineElements = Arrays.stream(line.split(separator)).map(String::trim).toArray(String[]::new);

@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Main extends Application {
 
     Stage mainStage;
-    // TODO: TESTING!!!!
+    // TODO: TEST this class
 
     @Override
     public void start(Stage primaryStage) throws Exception{
