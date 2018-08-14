@@ -48,8 +48,8 @@ public class DXFTest {
     // Default Layer, 2D
     @Test
     public void shouldCreateOneLineDXFStringOnlyPoint() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder().build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DrawingConfig config = DrawingConfig.builder().build();
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.234", "2.345"));
         String result = dxf.createDxf(lines);
 
@@ -60,11 +60,11 @@ public class DXFTest {
 
     @Test
     public void shouldCreateOneLineDXFStringPointAndPointId() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001"));
         String result = dxf.createDxf(lines);
 
@@ -76,62 +76,62 @@ public class DXFTest {
 
     @Test
     public void shouldCreateOneLineDXFStringPointAndHeight() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintHeight(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "10.001"));
         String result = dxf.createDxf(lines);
 
         assertEquals(expectedResult(
                 writePoint(DefaultLayerNames.get("points"), "1.001", "5.001", DEFAULT_HEIGHT) + "\n" +
-                        writeText(DefaultLayerNames.get("height"), "2.001", "3.501", DEFAULT_HEIGHT, "1.0", "10.001")
+                        writeText(DefaultLayerNames.get("height"), "2.001", "5.501", DEFAULT_HEIGHT, "1.0", "10.001")
         ), result);
     }
 
     @Test
     public void shouldCreateOneLineDXFStringPointAndCoords() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintCoords(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001"));
         String result = dxf.createDxf(lines);
 
         assertEquals(expectedResult(
                 writePoint(DefaultLayerNames.get("points"), "1.001", "5.001", DEFAULT_HEIGHT) + "\n" +
-                        writeText(DefaultLayerNames.get("coords"), "2.001", "2.001", DEFAULT_HEIGHT, "1.0", "E=1.001 N=5.001")
+                        writeText(DefaultLayerNames.get("coords"), "2.001", "5.501", DEFAULT_HEIGHT, "1.0", "E=1.001 N=5.001")
         ), result);
     }
 
     @Test
     public void shouldCreateOneLineDXFStringPointAndCode() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintCode(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "", "test code"));
         String result = dxf.createDxf(lines);
 
         assertEquals(expectedResult(
                 writePoint(DefaultLayerNames.get("points"), "1.001", "5.001", DEFAULT_HEIGHT) + "\n" +
-                        writeText(DefaultLayerNames.get("code"), "2.001", "0.501", DEFAULT_HEIGHT, "1.0", "test code")
+                        writeText(DefaultLayerNames.get("code"), "2.001", "5.501", DEFAULT_HEIGHT, "1.0", "test code")
         ), result);
     }
 
     @Test
     public void shouldCreateOneLineDXFStringAllAtributes() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
                 .setDoPrintCode(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "10.001", "test code"));
         String result = dxf.createDxf(lines);
 
@@ -147,7 +147,7 @@ public class DXFTest {
     // Layer by code
     @Test
     public void shouldCreateOneLineDXFStringAllAtributesLayerByCode() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
@@ -155,7 +155,7 @@ public class DXFTest {
                 .setLayerByCode(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "10.001", "test code"));
         String result = dxf.createDxf(lines);
 
@@ -170,7 +170,7 @@ public class DXFTest {
 // Default layer 3D
     @Test
     public void shouldCreateOneLineDXFStringAllAtributes3D() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
@@ -178,7 +178,7 @@ public class DXFTest {
                 .setIs3D(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "10.001", "test code"));
         String result = dxf.createDxf(lines);
 
@@ -193,7 +193,7 @@ public class DXFTest {
 
     @Test
     public void shouldCreateMultipleLineDXFStringAllAtributes3D() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
@@ -201,7 +201,7 @@ public class DXFTest {
                 .setIs3D(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Arrays.asList(
                 new CsvLine("1", "1.001", "5.001", "10.001", "test code1"),
                 new CsvLine("1", "2.001", "6.001", "11.001", "test code2"));
@@ -226,14 +226,14 @@ public class DXFTest {
     // printheight = true but no height value present => print default height
     @Test
     public void shouldCreateOneLineDXFStringNoHeightValuePresent() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
                 .setDoPrintCode(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "", "test code"));
         String result = dxf.createDxf(lines);
 
@@ -248,7 +248,7 @@ public class DXFTest {
     // is3D = true but no height value present => entity height is default height.
     @Test
     public void shouldCreate3DOneLineDXFStringNoHeightValuePresent() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
@@ -256,7 +256,7 @@ public class DXFTest {
                 .setIs3D(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "", "test code"));
         String result = dxf.createDxf(lines);
 
@@ -271,7 +271,7 @@ public class DXFTest {
     // print code = true but no code value present => print default code ("")
     @Test
     public void shouldCreateOneLineDXFStringNoCodeValuePresent() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
@@ -279,7 +279,7 @@ public class DXFTest {
                 .setIs3D(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "", ""));
         String result = dxf.createDxf(lines);
 
@@ -296,7 +296,7 @@ public class DXFTest {
 
     @Test
     public void shouldCreateOneLineDXFStringLayerByCodeNoCodeValuePresent() {
-        DrawingConfig basicPrintNothingConfig = DrawingConfig.builder()
+        DrawingConfig config = DrawingConfig.builder()
                 .setDoPrintId(true)
                 .setDoPrintHeight(true)
                 .setDoPrintCoords(true)
@@ -305,7 +305,7 @@ public class DXFTest {
                 .setLayerByCode(true)
                 .setTextHeight(1.0)
                 .build();
-        DXF dxf = new DXF(basicPrintNothingConfig);
+        DXF dxf = new DXF(config);
         List<CsvLine> lines = Collections.singletonList(new CsvLine("1", "1.001", "5.001", "", ""));
         String result = dxf.createDxf(lines);
 

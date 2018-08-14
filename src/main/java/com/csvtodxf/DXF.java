@@ -10,17 +10,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class DXF {
-    public static final double DEFAULT_HEIGHT = 0.0;
+    private static final double DEFAULT_HEIGHT = 0.0;
+    private static final double GENERAL_SPACING = 1.5;
+    private static final double FIRST_LINE_SPACING = 0.5;
+    private static final double[] LINE_OFFSETS = {1, -1, -2, -3};
     private final String HEADER = " 0\nSECTION\n 2\nENTITIES\n";
     private final String FOOTER = "\n 0\nENDSEC\n 0\nEOF";
     private final DrawingConfig config;
-    private Map<EntityType, String> defaultLayerNames = new HashMap<>();
+    private static Map<EntityType, String> defaultLayerNames = initDefaultLayerNamesMap();
+    private double[] linePositions;
 
     public DXF(DrawingConfig config) {
         this.config = config;
-        initDefaultLayerNamesMap();
+        this.linePositions = getLinepositions(config);
     }
 
     public String createDxf(List<CsvLine> lines) {
@@ -43,26 +48,30 @@ public class DXF {
 
             if (config.doPrintId()) {
                 String id = line.getLineElement();
+                double idLinePosition = linePositions[0];
                 SingleTextEntity pointIdText = new SingleTextEntity(position, getLayerNameFor(EntityType.POINT_ID, line), id, textHeight);
-                sb.append("\n").append(printSingleTextDrawingEntity(pointIdText, textHeight, textHeight * 0.5 * 1));
+                sb.append("\n").append(printSingleTextDrawingEntity(pointIdText, textHeight, textHeight * idLinePosition));
             }
 
             if (config.doPrintHeight()) {
+                double heightLinePosition = linePositions[1];
                 String heightDisplayValue = line.getLineElement3().orElse(String.valueOf(DEFAULT_HEIGHT));
                 SingleTextEntity heightText = new SingleTextEntity(position, getLayerNameFor(EntityType.HEIGHT, line), heightDisplayValue, textHeight);
-                sb.append("\n").append(printSingleTextDrawingEntity(heightText, textHeight,(textHeight * 1.5 * -1)));
+                sb.append("\n").append(printSingleTextDrawingEntity(heightText, textHeight,(textHeight * heightLinePosition)));
             }
 
             if (config.doPrintCoords()) {
+                double coordsLinePosition = linePositions[2];
                 String coordinateTextContent = "E=" + position.getE() + " N=" + position.getN();
                 SingleTextEntity coordinateText = new SingleTextEntity(position, getLayerNameFor(EntityType.COORDS, line), coordinateTextContent, textHeight);
-                sb.append("\n").append(printSingleTextDrawingEntity(coordinateText, textHeight, (textHeight * 1.5 * -2)));
+                sb.append("\n").append(printSingleTextDrawingEntity(coordinateText, textHeight, (textHeight * coordsLinePosition)));
             }
 
             if (config.doPrintCode()) {
+                double codeLinePosition = linePositions[3];
                 String code = line.getLineElement4().orElse("");
                 SingleTextEntity codeText = new SingleTextEntity(position, getLayerNameFor(EntityType.CODE, line), code, textHeight);
-                sb.append("\n").append(printSingleTextDrawingEntity(codeText, textHeight, (textHeight * 1.5 * -3)));
+                sb.append("\n").append(printSingleTextDrawingEntity(codeText, textHeight, (textHeight * codeLinePosition)));
             }
 
             return sb.toString();
@@ -71,19 +80,44 @@ public class DXF {
         return HEADER + entities + FOOTER;
     }
 
-    private void initDefaultLayerNamesMap() {
-        this.defaultLayerNames.put(EntityType.POINTS, "Points");
-        this.defaultLayerNames.put(EntityType.POINT_ID, "Point_id");
-        this.defaultLayerNames.put(EntityType.HEIGHT, "Height");
-        this.defaultLayerNames.put(EntityType.COORDS, "Coords");
-        this.defaultLayerNames.put(EntityType.CODE, "Code");
+    private static double[] getLinepositions(DrawingConfig config) {
+        // item order is the order of printed attributes, item order matters
+        boolean[] doPrintLines = {
+                config.doPrintId(),
+                config.doPrintHeight(),
+                config.doPrintCoords(),
+                config.doPrintCode()
+        };
+
+        return IntStream.range(0, LINE_OFFSETS.length).mapToDouble(position -> {
+            int offsetIndex = position - numberOfFalsesBefore(position, doPrintLines);
+            boolean isFirstLine = offsetIndex == 0;
+            if(isFirstLine) {
+                return LINE_OFFSETS[offsetIndex] * FIRST_LINE_SPACING;
+            }
+            return LINE_OFFSETS[offsetIndex] * GENERAL_SPACING;
+        }).toArray();
+    }
+
+    private static int numberOfFalsesBefore(int i, boolean[] booleans) {
+        return (int) IntStream.range(0,i).mapToObj(n -> booleans[n]).filter(isFalse -> !isFalse).count();
+    }
+
+    private static Map<EntityType, String> initDefaultLayerNamesMap() {
+        Map<EntityType, String> map = new HashMap<>();
+        map.put(EntityType.POINTS, "Points");
+        map.put(EntityType.POINT_ID, "Point_id");
+        map.put(EntityType.HEIGHT, "Height");
+        map.put(EntityType.COORDS, "Coords");
+        map.put(EntityType.CODE, "Code");
+        return map;
     }
 
     private String getLayerNameFor(EntityType entityType, CsvLine line) {
         if (this.config.isLayerByCode()) {
             return line.getLineElement4().orElse("Unknown_Code");
         }
-        return this.defaultLayerNames.get(entityType);
+        return defaultLayerNames.get(entityType);
     }
 
 
