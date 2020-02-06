@@ -4,6 +4,7 @@ package com.csvtodxf.ui;
 import com.csvtodxf.*;
 import com.csvtodxf.file.CsvFileReader;
 import com.csvtodxf.file.CsvLine;
+import com.csvtodxf.file.CsvLinePreview;
 import com.csvtodxf.file.FileReader;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +22,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class Controller {
@@ -29,7 +32,7 @@ public class Controller {
     private final String DEFAULT_SEP = ",";
     private final String DEFAULT_TEXT_HEIGHT = "1.0";
     private Main main;
-    FileReader reader = new CsvFileReader();
+    FileReader reader = new CsvFileReader(new LineFactory());
 
 
     public String getAbsInputFilePath() {
@@ -233,13 +236,15 @@ public class Controller {
     private void reloadPreview(String path, String separator) {
         // clear table before reload
         previewTable.getItems().clear();
-        List<CsvLine> previewLines = reader.readLine(Paths.get(path), separator, PREVIEW_LIST_LENGTH);
+        List<CsvLinePreview> previewLines = reader.readLinePreview(Paths.get(path), separator, PREVIEW_LIST_LENGTH).stream()
+                .map(i -> new CsvLinePreview(i.getLineElement(), i.getLineElement1(), i.getLineElement2(), i.getLineElement3().orElse(""), i.getLineElement4().orElse("")))
+                .collect(Collectors.toList());
         // map columns to data properties in CSV lines type
-        pointIdCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement"));
-        eastingCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement1"));
-        northingCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement2"));
-        heightCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement3"));
-        codeCol.setCellValueFactory(new PropertyValueFactory<CsvLine, String>("lineElement4"));
+        pointIdCol.setCellValueFactory(new PropertyValueFactory<CsvLinePreview, String>("lineElement"));
+        eastingCol.setCellValueFactory(new PropertyValueFactory<CsvLinePreview, String>("lineElement1"));
+        northingCol.setCellValueFactory(new PropertyValueFactory<CsvLinePreview, String>("lineElement2"));
+        heightCol.setCellValueFactory(new PropertyValueFactory<CsvLinePreview, String>("lineElement3"));
+        codeCol.setCellValueFactory(new PropertyValueFactory<CsvLinePreview, String>("lineElement4"));
         // add all items to the table
         previewTable.getItems().addAll(previewLines);
     }

@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface FileReader {
     List<CsvLine> readLine(Path path, String separator);
-    List<CsvLine> readLine(Path path, String separator, int limit);
+    List<CsvLine> readLinePreview(Path path, String separator, int limit);
 }

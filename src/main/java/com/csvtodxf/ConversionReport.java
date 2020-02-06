@@ -31,3 +31,5 @@ public class ConversionReport {
         this.fileSize = fileSize;
     }
 }
+
+// TODO: add number of skipped lines (failed, discarded lines)

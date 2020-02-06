@@ -1,5 +1,6 @@
 package com.csvtodxf.file;
 
+import com.csvtodxf.LineFactory;
 import org.hamcrest.core.IsNot;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class CsvFileReaderTest {
 
     @Before
     public void setUp() throws Exception {
-        csvFileReader = new CsvFileReader();
+        csvFileReader = new CsvFileReader(new LineFactory());
         SEPARATOR = ",";
     }
 
@@ -89,7 +90,7 @@ public class CsvFileReaderTest {
     @Test
     public void shouldReadMultipleLinesLimited() {
         Path path = Paths.get("src/test/resources/multipleLinesLimited.csv");
-        List<CsvLine> expected = csvFileReader.readLine(path, SEPARATOR, 2);
+        List<CsvLine> expected = csvFileReader.readLinePreview(path, SEPARATOR, 2);
         List<CsvLine> actual = Arrays.asList(
                 new CsvLine("1", "1.234", "2.345", "10.001", "test code"),
                 new CsvLine("2", "2.234", "3.345", "11.001", "test code2"));
@@ -98,7 +99,19 @@ public class CsvFileReaderTest {
         assertThat(expected.get(1), samePropertyValuesAs(actual.get(1)));
     }
 
-    // TODO: Test: a line has more than 5 elements
+    //a line has more than 5 or less than 3 elements => don't process it (discard)
+    @Test
+    public void shouldDiscardIllegalLengthLines() {
+        Path path = Paths.get("src/test/resources/invalidLineLengths.csv");
+        List<CsvLine> expected = csvFileReader.readLine(path, SEPARATOR);
+        List<CsvLine> actual = Arrays.asList(
+                new CsvLine("1", "1.234", "2.345", "10.001", "test code"),
+                new CsvLine("4", "2.234", "3.345", "11.001", "test code4"));
+        assertThat(expected.size(), is(2));
+        assertThat(expected.get(0), samePropertyValuesAs(actual.get(0)));
+        assertThat(expected.get(1), samePropertyValuesAs(actual.get(1)));
+    }
+
     // TODO: Test: can not open file -> error handling
 
 }
